@@ -1,0 +1,187 @@
+Requirements
+============
+
+Server
+-----
+
+The general strategy is:
+* Have all actions happen within server scope
+* Store all user data in server scope
+* Return pure data from server scope
+* Provide JRC protocol in client scope
+
+API documentation will be made from this once the code gets written.
+
+### Conventions ###
+
+* Time
+    * -1 = forever
+    * 0  = not banned / gagged / etc.
+    * time in seconds
+
+### Stored Data ###
+
+* Global
+    * Waitlist
+    * Bans
+    * Gags
+    * Persistent Rooms
+* Rooms
+    * Keepouts
+* Users
+    * Password
+    * Access Level
+
+### Temporary Data ###
+
+* Users
+    * Effective access level
+    * Logged in?
+    * Verified?
+    * Login time
+    * Last active uptime
+
+* Rooms
+    * Users in room
+
+### Actions Available ###
+
+Each access level can do the same all below it.
+Each action requires the client it was received from to be passed as a parameter
+
+#### Users ####
+
+* Begin Login
+    * Params: string `client version`, string `username`
+    * Returns: `null`
+    * Throws: `BannedError`
+* Challenge Response
+    * Params: int `response`
+    * Returns: boolean indicating success/failure 
+    If the challenge was failed, the socket will be disconnected
+    after a second (to give time to send a failure response).
+    * Throws: `LoginNotBegunError`
+* Authenticate to User
+    * Params: string `password`
+    * Returns: 
+    If the password was wrong, the socket will be disconnected
+    after a second (to give time to send a failure response).
+    * Throws: `UnverifiedError`, `AuthenticationFailedError`
+* Join room
+    * Params: string `room`
+    * Returns: `null`
+    * Throws: `UnverifiedError`, `RoomNotFoundError`, `AccessDeniedError`,  `WaitlistedError`
+* (Change name)?
+* Message
+    * Params: string `message`
+    * Returns: `null`
+    * Throws: `UnverifiedError`, `NotInRoomError`
+* Private message
+    * Params: string `to`, string `message`
+    * Throws: `UnverifiedError`, `UserNotFoundError`
+* Whois
+    * Params: ??? ????
+    * Returns: a Whois object
+    * Throws: `UnverifiedError`, ??? ?? ??? ? ??? ?
+* Entrywhois
+    * Params: ??? ?? ??? 
+    * Returns: a Whois object
+    * Throws: `UnverifiedError`, ??? ?? ??? ?
+* Autowhois
+    * Params: ???? ????
+    * Returns: a Whois object
+    * Throws : `UnverifiedError`, ??? ??? ????
+
+#### Tempops ####
+
+* Kick
+    * Params: string `user`, int `time`, *reason?*
+    * Returns: `null`
+    * Throws: `UnverifiedError`, `AccessDeniedError`
+    * Limits: Te 2h, Op 2wk
+
+#### Ops ####
+* Gag
+    * Params: string/ip `user`, int `time`, *reason?*
+    * Returns: `null`
+    * Throws: `UnverifiedError`, `AccessDeniedError`
+    * Gags the IP at the same time
+    * Limit: 2d
+* Ban
+    * Params: string/ip `user`, int `time`, *reason?*
+    * Returns: int `ban time`
+    * Throws: `UnverifiedError`, `AccessDeniedError`
+    * Limit: 2d
+    * Bans the IP at the same time
+* Keepout
+    * Params: string/ip `user`, int `time`, *reason?*
+    * Returns: int `keepout time`
+    * Throws: `UnverifiedError`, `AccessDeniedError`
+    * Keeps the IP out of the room
+    * Limit
+* Receive Mail
+    * Params: none
+    * Returns: list of `Mail` objects
+* Send Mail
+    * Params: string `user`, string `message`
+    * Returns: `null`
+    * Throws: `UnverifiedError`, `AccessDeniedError`, `UserNotFoundError`
+* TempOp/ UnTempOp
+    * Params: string `user`
+    * Returns: `null`
+    * Throws: `UnverifiedError`, `AccessDeniedError`, `UserNotFoundError`
+* Set User Info
+    * Params: string `user`, string `param`, string `value`
+    * Returns: `null`
+    * Throws: `UnverifiedError`, `AccessDeniedError`, `UserNotFoundError`
+    * Change other's room
+* Set Room Info
+    * Params: string `room`, string `param`, string `value`
+    * Returns: `null`
+    * Throws: `UnverifiedError`, `AccessDeniedError`, `RoomNotFoundError`
+    * Make/remove temporary room
+
+#### Masters ####
+* Set User Info
+    * As above
+    * Change passwords
+* Set Room Info
+    * As above
+    * Set room permanent
+* Shutdown
+    * Params: string `reason`
+    * Returns: `null`
+    * Throws: `UnverifiedError`, `AccessDeniedError`
+
+### Actions Applied to Users ###
+
+* Challenge
+    * Params: int `challenge`
+* Require Password
+    * Params: nothing
+* Leave
+    * Params: string `reason`
+* User Left
+    * Params: string `other user`
+* User Changed Name
+    * Params: string `old name`, string `new name`
+* Normal Message
+    * Params: string `from`, string `message`
+* Private Message
+    * Params: string `from`, *to?*, string `message`
+* Entry Whois
+    * Params: Whois `whois`
+* User Banned
+    * Params: string `user`, int `time`, string `reason`
+* User Joined Room
+    * Params: string `user`, string `room`
+
+
+### Errors ###
+
+
+### Flow ###
+
+
+Client
+------
