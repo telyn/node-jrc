@@ -1,5 +1,6 @@
 doc : docs
 
+.PHONY : docs
 docs : 
 	cd docs
-	make
+	$(MAKE)
