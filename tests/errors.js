@@ -1,5 +1,7 @@
 var errors = require("../lib/errors.js");
 
+// this will work to convince me that the errors work. No need to check every single one since they're made programmatically.
+// If a bug develops then I will eat these words, and probably add more tests.
 module.exports = {
     RoomNotFound: function(test) {
         var err = errors.RoomNotFoundError("Blargle blee",{room: "Some Room"});
