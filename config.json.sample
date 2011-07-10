@@ -1,0 +1,12 @@
+// This file stores all permanent read-only settings for node-jrc.
+// Currently this is only the masters (i.e. admins) of the server.
+// In time this will also include information such as the maximum length of bans, kicks, keepouts, waits and gags for each type of operator.
+// To use, rename this file to config.json.
+{ 
+    "masters": {
+        // passwords are sha1-hashed.
+        // this user has the password example, while example2's password is cheese.
+        "example": "c3499c2729730a7f807efb8676a92dcb6f8a3f8f",
+        "alsoexample": "bcef7a046258082993759bade995b3ae8bee26c7"
+    }
+}
