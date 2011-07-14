@@ -5,7 +5,7 @@ Hi there!
 
 In time it will come to include both a server and client library, with samples and API documentation.
 
-Currently development is focused on the server implementation, and is [rapidly occurring](commits).
+Currently development is focused on the server implementation, and is [rapidly occurring](commits/master).
 
 HEAD is pulled nightly and run at nornalbion.com:41528, so if you have [GreenReaper's JRNet](http://www.greenreaper.co.uk/#JRNet) JRC client, you can connect to it and see what the server can do yourself.
 
