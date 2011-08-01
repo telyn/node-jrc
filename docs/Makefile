@@ -1,24 +1,38 @@
-BUILD_DOCUMENTATION :=
-USER_DOCUMENTATION := 
-API_AND_PROTOCOL_DOCUMENTATION := 
+BUILD_HTMLS=
+USER_HTMLS=
+API_HTMLS=requirements.html
+PROTOCOL_HTMLS=
 
-DOCTYPES := html man pdf
+DOCTYPES= html man pdf
+
+BUILD_PDFS=
+USER_PDFS=
+API_PDFS=requirements.pdf
+PROTOCOL_PDFS=
+
+HTMLS=$(BUILD_HTMLS) $(USER_HTMLS) $(API_HTMLS) $(PROTOCOL_HTMLS) 
+PDFS=$(BUILD_PDFS) $(USER_PDFS) $(API_PDFS) $(PROTOCOL_PDFS) 
 
 
 MARKDOWN = markdown
 WKHTMLTOPDF = wkhtmltopdf
 
-.SILENT : $(DOCTYPES)
-.PHONY : docs clean
+.PHONY: html pdf man docs clean
+
 docs: $(DOCTYPES)
 
 
-html:
-	mkdir html
+html: $(HTMLS)
+	mkdir -p html
+	cp *.html html
+
 man:
-	mkdir man
-pdf: html
-	mkdir pdf
+	mkdir -p man
+
+pdf: html $(PDFS) 
+	mkdir -p pdf
+	cp *.pdf pdf
+	rm *.pdf *.html
 	
 clean:
 	rm *.pdf *.html
@@ -28,5 +42,5 @@ clean:
 	markdown $< > $@
 #	cat header.html $@ footer.html > $@
 
-%.pdf : %.html
+%.pdf: %.html
 	wkhtmltopdf page $< $@
