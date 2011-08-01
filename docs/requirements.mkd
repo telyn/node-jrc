@@ -58,18 +58,18 @@ Each action requires the client it was received from to be passed as a parameter
 #### Users ####
 
 * Begin Login
-    * Params: string `client version`, string `username`
+    * Params: `string client version`, `string username`
     * Returns: `null`
     * Throws: `BannedError`, `NameInUseError`
 * Challenge Response
-    * Params: int `response`
+    * Params: `int response`
     * Returns: boolean indicating success/failure 
 
       If the challenge was failed, the socket will be disconnected
       after a second (to give time to send a failure response).
     * Throws: `LoginNotBegunError`
 * Authenticate to User
-    * Params: string `password`
+    * Params: `string password`
     * Returns: 
       
       If the password was wrong, the socket will be disconnected
@@ -77,20 +77,20 @@ Each action requires the client it was received from to be passed as a parameter
     
     * Throws: `UnverifiedError`, `AuthenticationFailedError`
 * Join room
-    * Params: string `room`
+    * Params: `string room`
     * Returns: `null`
     * Throws: `UnverifiedError`, `RoomNotFoundError`, `AccessDeniedError`,  `WaitlistedError`
 * Change name
-    * Params: string `new name`
+    * Params: `string new name`
     * If you're opped, this will de-op you.
     * If your new name is reserved, the server will ask you for a password.
     * Throws: `UnverifiedError`, `AccessDeniedError`, `NameInUseError`
 * Message
-    * Params: string `message`
+    * Params: `string message`
     * Returns: `null`
     * Throws: `UnverifiedError`, `NotInRoomError`
 * Private message
-    * Params: string `to`, string `message`
+    * Params: `string to`, `string message`
     * Throws: `UnverifiedError`, `UserNotFoundError`
 <!-- TODO: Check whois params and throws -->
 * Whois
@@ -116,24 +116,24 @@ Each action requires the client it was received from to be passed as a parameter
 * Op list
 * Room op list
 * Number of users on server
-    * Returns: int `number of users`
+    * Returns: `int number of users`
 * Number of rooms on server
-    * Returns: int `number of rooms`
+    * Returns: `int number of rooms`
 * Number of users in room
-    * Returns: int `number of users`
+    * Returns: `int number of users`
 * Number of messages in mailbox
-    * Returns: int `number of messages`
+    * Returns: `int number of messages`
 * Number of logs waiting to be output?
-    * Returns: int `number of logs`
+    * Returns: `int number of logs`
 * Ignore a user
 * Keepout info
-    * Params: string `user`
+    * Params: `string user`
 
 #### Tempops ####
 
 * Kick
     <!-- TODO: Check params -->
-    * Params: string `user`, int `time`, **reason?**
+    * Params: `string user`, `int time`, **reason?**
     * Returns: `null`
     * Throws: `UnverifiedError`, `AccessDeniedError`
     * Limits: Te 2h, Op 2wk
@@ -142,22 +142,22 @@ Each action requires the client it was received from to be passed as a parameter
 
 * Gag
     <!-- TODO: Check params -->
-    * Params: string/ip `user`, int `time`, **reason?**
+    * Params: string/ip `user`, `int time`, **reason?**
     * Returns: `null`
     * Throws: `UnverifiedError`, `AccessDeniedError`
     * Gags the IP at the same time
     * Limit: 2d
 * Ban
     <!-- TODO: Check params -->
-    * Params: string/ip `user`, int `time`, **reason?**
-    * Returns: int `ban time`
+    * Params: string/ip `user`, `int time`, **reason?**
+    * Returns: `int ban time`
     * Throws: `UnverifiedError`, `AccessDeniedError`
     * Limit: 2d
     * Bans the IP at the same time
 * Keepout
     <!-- TODO: Check params -->
-    * Params: string/ip `user`, int `time`, **reason?**
-    * Returns: int `keepout time`
+    * Params: string/ip `user`, `int time`, **reason?**
+    * Returns: `int keepout time`
     * Throws: `UnverifiedError`, `AccessDeniedError`
     * Keeps the IP out of the room
     * Limit
@@ -166,20 +166,20 @@ Each action requires the client it was received from to be passed as a parameter
     * Returns: list of `Mail` objects
     * Throws: `UnverifiedError`,`AccessDeniedError`
 * Send Mail
-    * Params: string `user`, string `message`
+    * Params: `string user`, `string message`
     * Returns: `null`
     * Throws: `UnverifiedError`, `AccessDeniedError`, `UserNotFoundError`
 * TempOp/ UnTempOp
-    * Params: string `user`
+    * Params: `string user`
     * Returns: `null`
     * Throws: `UnverifiedError`, `AccessDeniedError`, `UserNotFoundError`
 * Set User Info
-    * Params: string `user`, string `param`, string `value`
+    * Params: `string user`, `string param`, `string value`
     * Returns: `null`
     * Throws: `UnverifiedError`, `AccessDeniedError`, `UserNotFoundError`
     * Change other's room
 * Set Room Info
-    * Params: string `room`, string `param`, string `value`
+    * Params: `string room`, `string param`, `string value`
     * Returns: `null`
     * Throws: `UnverifiedError`, `AccessDeniedError`, `RoomNotFoundError`
     * Make/remove temporary room
@@ -193,47 +193,47 @@ Each action requires the client it was received from to be passed as a parameter
     * As above
     * Set room permanent
 * Shutdown
-    * Params: string `reason`
+    * Params: `string reason`
     * Returns: `null`
     * Throws: `UnverifiedError`, `AccessDeniedError`
 
 ### Actions Applied to Users ###
 
 * Challenge
-    * Params: int `challenge`
+    * Params: `int challenge`
 * Require Password
     * Params: nothing
 * Leave
-    * Params: string `reason`
+    * Params: `string reason`
 * User Left
-    * Params: string `other user`
+    * Params: `string other user`
 * User Changed Name
-    * Params: string `old name`, string `new name`
+    * Params: `string old name`, `string new name`
 * Normal Message
-    * Params: string `from`, string `message`
+    * Params: `string from`, `string message`
 * Private Message
     <!-- TODO: Check params -->
-    * Params: string `from`, **to?**, string `message` 
+    * Params: `string from`, **to?**, `string message` 
 * Entry Whois
     * Params: Whois `whois`
 * User Joined Room
-    * Params: string `user`, string `room`
+    * Params: `string user`, `string room`
 * User Kicked
-    * Params: array\[string\] `users`, int `time`, \[string `reason`\]
+    * Params: array\[string\] `users`, `int time`, \[`string reason`\]
     * This is also how you let a user know they've been kicked. Kicks take you off the server.
 * User Banned
-    * Params: string `user`, int `time`, \[string `reason`\]
+    * Params: `string user`, `int time`, \[`string reason`\]
     * You don't let users know they've been banned. I think only tempops and above get this.
 * User Gagged
-    * Params: string `user`, int `time`, \[
+    * Params: `string user`, `int time`, \[
     * This is also how you let a user know they've been gagged.
 * Log dumped
     * Params: string **`unknown`**, string **`unknown2`**
     * unknown has dumped a log for unknown2
 * Allowed to enter
-    * Params: string `room`
+    * Params: `string room`
 * Kicked out
-    * Params: string `room`, string `user`
+    * Params: `string room`, `string user`
 
 ### Errors ###
 
