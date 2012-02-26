@@ -252,7 +252,7 @@ or
     Server: JRC_ROOM (their_name, roomname)
     Client: send JRC_WHOIS, "entrywhois" & vbTab & Chr$(JRC_INFO) & Chr$(JRC_USERINFO) & their_name, False
 
-#### Settting Room Permanent ####
+#### Setting Room Permanent ####
 
     Client: send JRC_SETINFO, Chr$(JRC_ROOMINFO) & currentroom & vbTab & "Permanent" & IIf(permroom, vbTab & "true", "")
  
