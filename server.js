@@ -13,7 +13,7 @@ fs.readFile("./config.json", function(err,data) {
         if(!err) {
             state = JSON.parse(data);
         }
-        //god this is ugly.
+
         server = jrc.createServer("127.0.0.1",config,state);
         server.listen(41528);
 
