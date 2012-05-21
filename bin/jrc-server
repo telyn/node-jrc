@@ -1,15 +1,18 @@
-var jrc = require("./lib/server.js");
+#!/usr/bin/env node
+
 var fs = require("fs");
+
+var jrc = require("../");
 
 var config = {};
 var state = {};
 var server = null;
 
-fs.readFile("./config.json", function(err,data) {
+fs.readFile(__dirname+"/../config.json", function(err,data) {
     if(!err) {
         config = JSON.parse(data);
     }
-    fs.readFile("./state.json", function(err,data) {
+    fs.readFile(__dirname+"/../state.json", function(err,data) {
         if(!err) {
             state = JSON.parse(data);
         }
