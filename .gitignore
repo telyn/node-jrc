@@ -1,4 +1,4 @@
-.*.swp
+.*.s*
 config.json
 state.json
 node_modules/
