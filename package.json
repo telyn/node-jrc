@@ -12,5 +12,13 @@
   },
   "engines": {
     "node": ">= 0.5.0-pre"
+  },
+  "scripts": {
+      "test": "mocha -R spec"
+  },
+  "devDependencies": {
+      "mocha": "",
+      "should": "",
+      "gently": ""
   }
 }
