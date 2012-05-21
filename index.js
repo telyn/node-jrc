@@ -4,4 +4,4 @@ var server = require('./lib/server.js')
 module.exports = {
     createServer: server.createServer,
     Client: Client
-}
+};
