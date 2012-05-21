@@ -7,17 +7,20 @@ Hi there!
 
 In time it will come to include both a server and client library, with samples and API documentation.
 
-Currently development is focused on the server implementation, and is [rapidly occurring](commits/master).
-
-HEAD is pulled nightly and run at nornalbion.com:41528, so if you have [GreenReaper's JRNet](http://www.greenreaper.co.uk/#JRNet) JRC client, you can connect to it and see what the server can do yourself.
 
 Usage
 =====
 
 Alright, so you want to set up your own server? Great! It's as simple as
 
+    npm install jrc
+    cd node_modules/jrc
+    npm start
+
+or, for the braver:
+
     git clone git://github.com/nornalbion/node-jrc.git
     cd node-jrc
-    node server.js
+    bin/jrc-server
 
 Take a look at the file config.json.sample if you want to configure things such as masters.

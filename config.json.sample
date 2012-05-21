@@ -8,5 +8,8 @@
         // this user has the password example, while example2's password is cheese.
         "example": "c3499c2729730a7f807efb8676a92dcb6f8a3f8f",
         "alsoexample": "bcef7a046258082993759bade995b3ae8bee26c7"
-    }
+    },
+
+    // There is now also a debug flag!
+    "debug": false
 }
