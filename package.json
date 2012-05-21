@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git@github.com:/nornalbion/node-jrc"
+    "url": "http://github.com/nornalbion/node-jrc"
   },
   "author": "Norn Albion <norn@nornalbion.com> (http://nornalbion.com)",
   "directories": {
