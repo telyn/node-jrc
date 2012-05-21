@@ -14,7 +14,7 @@
     "node": ">= 0.5.0-pre"
   },
   "scripts": {
-      "test": "mocha -R spec"
+      "test": "mocha -R spec --globals has_more_expectations"
   },
   "devDependencies": {
       "mocha": "",
