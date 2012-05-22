@@ -6,9 +6,12 @@ var Client = require('../lib/server/client.js');
 
 var streamstub;
 
+var chomp = function(string) {
+    return string.replace(/(\n|\r)+$/, '');
+};
 
 describe('Server', function() {
-    describe('Client Connection Minutiae', function() {
+    describe('Client Connection', function() {
         beforeEach(function() {
             streamstub = {
                 remoteAddress: "",
@@ -18,16 +21,13 @@ describe('Server', function() {
             };
         });
 
+
         it('should send a valid (forced) leave message', function(done) {
             gently.expect(streamstub, 'write', function(data) {
-                var message = new Message(data);
-                message.command.should.equal(constants.SERVERMESSAGE);
-                message.hasSubcommand().should.be.true;
-                message.subcommand.should.equal(constants.LEAVE);
+                data = chomp(data);
+                var expected= "wCSome reason!";
 
-                message.params.length.should.equal(1);
-                message.params[0].should.equal('Some reason!');
-
+                data.should.equal(expected);
                 done();
             });
 
@@ -35,16 +35,13 @@ describe('Server', function() {
             client.leave('Some reason!');
         });
 
+
         it('should send a valid other-user-left message', function(done) {
             gently.expect(streamstub, 'write', function(data) {
-                var message = new Message(data);
-                message.command.should.equal(constants.LEAVE);
-                message.hasSubcommand().should.be.false;
+                data = chomp(data);
+                var expected= "CPerson\tRoom";
 
-                message.params.length.should.equal(2);
-                message.params[0].should.equal('Person');
-                message.params[1].should.equal('Room');
-
+                data.should.equal(expected);
                 done();
             });
 
@@ -52,16 +49,13 @@ describe('Server', function() {
             client.receiveLeftRoom('Person','Room');
         });
 
+
         it('should send a valid challenge message', function(done) {
             gently.expect(streamstub, 'write', function(data) {
-                var message = new Message(data);
-                message.command.should.equal(constants.SERVERMESSAGE);
-                message.hasSubcommand().should.be.true;
-                message.subcommand.should.equal(constants.SERVERCHALLENGE);
+                data = chomp(data);
+                var expected= "w~46532";
 
-                message.params.length.should.equal(1);
-                message.params[0].should.equal('46532');
-
+                data.should.equal(expected);
                 done();
             });
 
@@ -69,17 +63,41 @@ describe('Server', function() {
             client.receiveChallenge(46532);
         });
 
+
+        it('should send valid server user count', function(done) {
+            gently.expect(streamstub, 'write', function(data) {
+                data = chomp(data);
+                var expected= "G\ta45";
+
+                data.should.equal(expected);
+                done();
+            });
+
+            var client = new Client({debug:false}, streamstub);
+            client.receiveServerUserCount(45);
+        });
+
+
+        it('should send valid server user list', function(done) {
+            gently.expect(streamstub, 'write', function(data) {
+                data = chomp(data);
+                var expected= "H\taNornAlbion\tGameFreak";
+
+                data.should.equal(expected);
+                done();
+            });
+
+            var client = new Client({debug:false}, streamstub);
+            client.receiveServerUserList(['NornAlbion', 'GameFreak'])
+        });
+
+
         it('should send a valid room list.', function(done) {
             gently.expect(streamstub, 'write', function(data) {
-                var message = new Message(data);
-                message.command.should.equal(constants.GENERALINFO);
-                message.hasSubcommand().should.be.true;
-                message.subcommand.should.equal(constants.ROOMINFO);
+                data = chomp(data);
+                var expected= "H\tbtest\ttest 2";
 
-                message.params.length.should.equal(3);
-                message.params[0].should.equal("");
-                message.params[1].should.equal("btest");
-                message.params[2].should.equal("test 2");
+                data.should.equal(expected);
                 done();
             });
 
@@ -88,25 +106,19 @@ describe('Server', function() {
 
         });
 
+
         it('should send a valid whois for a user.', function(done) {
             gently.expect(streamstub,'write', function(data) {
+                data = chomp(data);
+                var expected= "^\twhois\tIasteve\tOnline\0025s\3Level\2Te\3";
 
-                var message = new Message(data);
-                message.params[0].should.equal("whois");
-                message.whois_data.should.have.property("steve");
-                message.whois_data.steve.should.have.property("Online");
-                message.whois_data.steve.Online.should.equal("5s");
-                message.whois_data.steve.should.have.property("Level");
-                message.whois_data.steve.Level.should.equal("Te");
+                data.should.equal(expected);
                 done();
             });
 
             var client = new Client({debug:false}, streamstub);
             client.receiveWhois("steve", {Online: '5s', Level: 'Te'});
         });
-
-
-
 
     });
 });
