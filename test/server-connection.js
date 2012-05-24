@@ -1,8 +1,10 @@
 var should = require('should');
 var gently = new (require('gently'))();
+
 var Message = require('../lib/message.js');
 var constants = require('../lib/constants.js');
 var Client = require('../lib/server/client.js');
+var jrc = require('../');
 var errors = require('../lib/errors.js');
 
 var chomp = function(string) {
@@ -10,6 +12,7 @@ var chomp = function(string) {
 };
 
 var streamstub;
+var client;
 var server;
 
 describe('Client Connection', function() {
@@ -21,6 +24,7 @@ describe('Client Connection', function() {
                 addListener: function() {},
                 write: function() { }
             };
+            client = new Client({debug:false}, streamstub);
         });
 
 
@@ -33,7 +37,7 @@ describe('Client Connection', function() {
                 done();
             });
 
-            var client = new Client({debug:false}, streamstub);
+            
             client.leave('Some reason!');
         });
 
@@ -47,7 +51,7 @@ describe('Client Connection', function() {
                 done();
             });
 
-            var client = new Client({debug:false}, streamstub);
+            
             client.receiveLeftRoom('Person','Room');
         });
 
@@ -61,7 +65,7 @@ describe('Client Connection', function() {
                 done();
             });
 
-            var client = new Client({debug:false}, streamstub);
+            
             client.receiveChallenge(46532);
         });
 
@@ -75,7 +79,7 @@ describe('Client Connection', function() {
                 done();
             });
 
-            var client = new Client({debug:false}, streamstub);
+            
             client.receiveServerUserCount(45);
         });
 
@@ -89,7 +93,7 @@ describe('Client Connection', function() {
                 done();
             });
 
-            var client = new Client({debug:false}, streamstub);
+            
             client.receiveServerUserList(['NornAlbion', 'GameFreak'])
         });
 
@@ -103,7 +107,7 @@ describe('Client Connection', function() {
                 done();
             });
 
-            var client = new Client({debug:false}, streamstub);
+            
             client.receiveRoomList(["test","test 2"]);
 
         });
@@ -118,11 +122,128 @@ describe('Client Connection', function() {
                 done();
             });
 
-            var client = new Client({debug:false}, streamstub);
+            
             client.receiveWhois("steve", {Online: '5s', Level: 'Te'});
         });
 
 	});
+
+    describe('Receiving messages', function() {
+        beforeEach(function() {
+            var cfg = {
+                    debug:false,
+                    silent:true
+                };
+            server = jrc.createServer("127.0.0.1",cfg,{});
+            streamstub = {
+                remoteAddress: "",
+                setKeepAlive: function() {},
+                addListener: function() {},
+                write: function() { },
+                close: function() { }
+            };
+            client = new Client(server,streamstub);
+            client.handleErrors = false;
+            server.addClient(client);
+        });
+
+        afterEach(function() {
+            gently.verify();
+        });
+
+        it('should correctly handle incoming login requests', function(done) {
+
+            // because gently hijacks calls, server.setName is never actually called
+            // so no PasswordRequiredError is generated for NornAlbion.
+            gently.expect(server, 'setName',1, function(c, name) {
+                //this.setName(c,name);
+
+                c.should.equal(client);
+                name.should.equal('NornAlbion');
+            });
+            gently.expect(client, 'receiveChallenge',1, function(challenge) {
+                challenge.should.be.within(1, 70000);
+                done();
+            });
+            client.dataHandler('^JRNet 1.1.636\tANornAlbion'); 
+
+        });
+
+        it('should correctly handle incoming successful challenge responses', function() {
+            var sentsomething = false;
+            client.send = function() {
+                sentsomething = true;
+            }
+            client.challenge = 53046;
+            client.dataHandler('~55984');
+            sentsomething.should.be.false;
+        });
+
+        it('should correctly handle incoming unsuccessful challenge responses', function(done) {
+            client.name = 'NornAlbion';
+            client.room = "Creatures";
+            
+            gently.expect(client,'leave');
+            gently.expect(streamstub, 'close');
+            gently.expect(server, 'removeClient', function(c) {
+                c.name.should.equal("NornAlbion");
+                done();
+            })
+
+            client.challenge = 53046;
+            client.dataHandler('~55985');
+        });
+
+
+        it('should correctly handle incoming normal messages', function(done) {
+            client.name = "NornAlbion";
+            client.room = "Creatures";
+            gently.expect(server,'sendMessage', function(name, room, message) {
+                name.should.equal("NornAlbion");
+                room.should.equal("Creatures");
+                message.should.equal("Hello!");
+                done();
+            });
+            client.dataHandler("EHello!");
+
+        });
+
+
+        it('should correctly handle incoming private messages', function(done) {
+            client.name = "NornAlbion";
+            gently.expect(server,'sendPrivateMessage', function(name, recipients, message) {
+                name.should.equal("NornAlbion");
+                recipients[0].should.equal("GameFreak");
+                message.should.equal("Hello!");
+
+                gently.expect(server,'sendPrivateMessage', function(name, recipients, message) {
+                    name.should.equal("NornAlbion");
+                    recipients[0].should.equal("GameFreak");
+                    recipients[1].should.equal("WolfKazumaru");
+                    message.should.equal("Hello!");
+                    done();
+                });
+                client.dataHandler("FGameFreak\tWolfKazumaru\tHello!");
+            });
+            
+            
+
+            client.dataHandler("FGameFreak\tHello!");
+        });
+        
+        it('should correctly handle incoming room join requests');
+        it('should correctly handle incoming userlist requests');
+        it('should correctly handle incoming room list requests');
+        it('should correctly handle incoming room userlist requests');
+        it('should correctly handle incoming user count requests');
+        it('should correctly handle incoming room count requests');
+        it('should correctly handle incoming room user count requests');
+        it('should correctly handle incoming mail count requests');
+        it('should correctly handle incoming mail requests');
+        it('should correctly handle incoming send mail requests');
+
+
+    });
 
 	describe('Error handling', function() {
 		beforeEach(function() {
@@ -132,25 +253,25 @@ describe('Client Connection', function() {
                 addListener: function() {},
                 write: function() { }
             };
+            client = new Client({debug:false}, streamstub);
         });
 
         it('shouldn\'t do anything on a NullRoomError', function() {
             var wroteSomething = false;
-            var error = errors.NullRoomError();
+            var error = new errors.NullRoomError();
             streamstub.write = function(data) {
                 wroteSomething = true;
                 
             };
 
-            var client = new Client({debug:false}, streamstub);
+            
             client.handleError(error);
             wroteSomething.should.be.false;
         });
 
 
         it('should handle a RoomNotFoundError', function(done) {
-            var error = errors.RoomNotFoundError();
-            error.room = "Creatures";
+            var error = new errors.RoomNotFoundError("Room not found", {room: "Creatures"});
             gently.expect(streamstub,'write', function(data) {
                 data = chomp(data);
                 var expected = "xyb"+error.room;
@@ -159,14 +280,14 @@ describe('Client Connection', function() {
                 data.should.equal(expected);
                 done();
             });
-            var client = new Client({debug:false}, streamstub);
+            
             client.handleError(error);
 
         });
 
 
         it('should handle a UserNotFoundError', function(done) {
-            var error = errors.UserNotFoundError();
+            var error = new errors.UserNotFoundError("User not found", {user: "NornAlbion"});
             error.user = "NornAlbion";
             gently.expect(streamstub,'write', function(data) {
                 data = chomp(data);
@@ -176,14 +297,13 @@ describe('Client Connection', function() {
                 data.should.equal(expected);
                 done();
             });
-            var client = new Client({debug:false}, streamstub);
+            
             client.handleError(error);
         });
 
 
         it('should handle a UsersNotFoundError', function(done) {
-            var error = errors.UsersNotFoundError();
-            error.users = ["NornAlbion","GameFreak"];
+            var error = new errors.UsersNotFoundError("Users not found", {users: ["NornAlbion","GameFreak"]});
             gently.expect(streamstub,'write', function(data) {
                 data = chomp(data);
                 var expected = "xya"+error.users.join("\t");
@@ -192,14 +312,13 @@ describe('Client Connection', function() {
                 data.should.equal(expected);
                 done();
             });
-            var client = new Client({debug:false}, streamstub);
+            
             client.handleError(error);
         });
 
 
         it('should handle a NameTakenError', function(done) {
-            var error = errors.NameTakenError();
-            error.nick = "NornAlbion";
+            var error = new errors.NameTakenError("Name already in use", {newname: "NornAlbion"});
             gently.expect(streamstub,'write', function(data) {
                 data = chomp(data);
                 var expected = "wCName in use.";
@@ -213,14 +332,14 @@ describe('Client Connection', function() {
                 data.should.equal(expected);
                 done();
             });
-            var client = new Client({debug:false}, streamstub);
+            
             client.handleError(error);
         });
 
 
         it('should handle a PasswordRequiredError', function(done) {
-            var error = errors.PasswordRequiredError();
-            error.username = "NornAlbion";
+            var error = new errors.PasswordRequiredError("Password required", {username: "NornAlbion"});
+            
 
             gently.expect(streamstub,'write', function(data) {
                 data = chomp(data);
@@ -230,14 +349,14 @@ describe('Client Connection', function() {
                 data.should.equal(expected);
                 done();
             });
-            var client = new Client({debug:false}, streamstub);
+            
             client.handleError(error);
         });
 
 
         it('should handle a WrongPasswordError', function(done) {
-            var error = errors.WrongPasswordError();
-            error.username = "NornAlbion";
+            var error = new errors.WrongPasswordError("That is the wrong password!", {username: "NornAlbion"});
+            
             gently.expect(streamstub,'write', function(data) {
                 data = chomp(data);
                 var expected = "xza"+error.username;
@@ -246,7 +365,7 @@ describe('Client Connection', function() {
                 data.should.equal(expected);
             });
 
-            var client = new Client({debug:false}, streamstub);
+            
 
             gently.expect(client, 'leave', function(reason) {
                 done();
@@ -258,8 +377,7 @@ describe('Client Connection', function() {
 
 
         it('should handle a AccessDeniedToBanError', function(done) {
-            var error = errors.AccessDeniedToBanError();
-            error.address = "10.0.0.1";
+            var error = new errors.AccessDeniedToBanError("You don't have permission to ban.", {address: "10.0.0.1"});
             
             gently.expect(streamstub,'write', function(data) {
                 data = chomp(data);
@@ -269,9 +387,11 @@ describe('Client Connection', function() {
                 data.should.equal(expected);
                 done();
             });
-            var client = new Client({debug:false}, streamstub);
+            
             client.handleError(error);
         });
+
+        
 
     });
 });
