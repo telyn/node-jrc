@@ -126,6 +126,21 @@ describe('Client Connection', function() {
             client.receiveWhois("steve", {Online: '5s', Level: 'Te'});
         });
 
+        it('should send a valid inbox count', function(done) {
+            gently.expect(streamstub,'write', function(data) {
+                data = chomp(data);
+                var expected= "GT1";
+
+                data.should.equal(expected);
+                done();
+            });
+            
+
+            client.receiveInboxCount(1);
+        });
+
+        it('should send a valid inbox message');
+
 	});
 
     describe('Receiving messages', function() {
@@ -172,6 +187,7 @@ describe('Client Connection', function() {
         it('should correctly handle incoming successful challenge responses', function() {
             var sentsomething = false;
             client.send = function() {
+                console.log(JSON.stringify(arguments));
                 sentsomething = true;
             }
             client.challenge = 53046;
@@ -225,20 +241,85 @@ describe('Client Connection', function() {
                 });
                 client.dataHandler("FGameFreak\tWolfKazumaru\tHello!");
             });
-            
-            
 
             client.dataHandler("FGameFreak\tHello!");
         });
         
-        it('should correctly handle incoming room join requests');
-        it('should correctly handle incoming userlist requests');
-        it('should correctly handle incoming room list requests');
-        it('should correctly handle incoming room userlist requests');
-        it('should correctly handle incoming user count requests');
-        it('should correctly handle incoming room count requests');
-        it('should correctly handle incoming room user count requests');
-        it('should correctly handle incoming mail count requests');
+        it('should correctly handle incoming room join requests', function(done) {
+            client.name = "NornAlbion";
+            gently.expect(server,'joinRoom', function(name, room) {
+                    name.should.equal("NornAlbion");
+                    room.should.equal("Creatures");
+                    done();
+                });
+                client.dataHandler("DCreatures");
+        });
+
+        it('should correctly handle incoming userlist requests', function(done) {
+            client.name = 'NornAlbion';
+            gently.expect(server, 'sendServerUserList', function(c) {
+                c.should.equal(client.name);
+                done();
+            });
+            client.dataHandler('Ha');
+        });
+
+        it('should correctly handle incoming room list requests', function(done) {
+            client.name = 'NornAlbion';
+            gently.expect(server, 'sendRoomList', function(c) {
+                c.should.equal("NornAlbion");
+                done();
+            });
+            client.dataHandler('Hb');
+
+        });
+
+        it('should correctly handle incoming room userlist requests', function(done) {
+            client.name = 'NornAlbion';
+            gently.expect(server, 'sendRoomUserList', function(c, room) {
+                c.should.equal("NornAlbion");
+                room.should.equal("Creatures");
+                done();
+            });
+            client.dataHandler('HcCreatures');
+        });
+        it('should correctly handle incoming user count requests', function(done) {
+            client.name = 'NornAlbion';
+            gently.expect(server, 'sendServerUserCount', function(c) {
+                c.should.equal("NornAlbion");
+                
+                done();
+            });
+            client.dataHandler('Ga');
+        });
+        it('should correctly handle incoming room count requests', function(done) {
+            client.name = 'NornAlbion';
+            gently.expect(server, 'sendRoomCount', function(c, room) {
+                c.should.equal("NornAlbion");
+                
+                done();
+            });
+            client.dataHandler('Gb');
+        });
+
+        it('should correctly handle incoming room user count requests', function(done) {
+            client.name = 'NornAlbion';
+            gently.expect(server, 'sendRoomUserCount', function(c, room) {
+                c.should.equal("NornAlbion");
+                room.should.equal("Creatures");
+                done();
+            });
+            client.dataHandler('GcCreatures');
+        });
+        it('should correctly handle incoming mail count requests', function(done) {
+            client.name = 'NornAlbion';
+            gently.expect(server, 'sendInboxCount', function(c) {
+                c.should.equal("NornAlbion");
+                
+                done();
+            });
+            client.dataHandler('GT');
+        });
         it('should correctly handle incoming mail requests');
         it('should correctly handle incoming send mail requests');
 
@@ -258,6 +339,7 @@ describe('Client Connection', function() {
 
         it('shouldn\'t do anything on a NullRoomError', function() {
             var wroteSomething = false;
+           
             var error = new errors.NullRoomError();
             streamstub.write = function(data) {
                 wroteSomething = true;
@@ -376,7 +458,7 @@ describe('Client Connection', function() {
         });
 
 
-        it('should handle a AccessDeniedToBanError', function(done) {
+        it('should handle an AccessDeniedToBanError', function(done) {
             var error = new errors.AccessDeniedToBanError("You don't have permission to ban.", {address: "10.0.0.1"});
             
             gently.expect(streamstub,'write', function(data) {
@@ -391,7 +473,18 @@ describe('Client Connection', function() {
             client.handleError(error);
         });
 
-        
+        it('should handle a NoMailError', function(done) {
+            var error = new errors.NoMailError("No mail found for you!");
+
+            gently.expect(streamstub,'write', function(data) {
+                data = chomp(data);
+                var expected = "xyT";
+
+                data.should.equal(expected);
+                done();
+            });
+            client.handleError(error);
+        });     
 
     });
 });
