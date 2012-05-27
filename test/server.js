@@ -77,9 +77,9 @@ describe('Server', function() {
             });
         });
 
-        it('should correctly build whois lists');
+        it('should build whois lists');
         it('should move a user into a valid room');
-        it('should correctly verify passwords');
+        it('should verify passwords');
             
     });
     describe('Actions', function() {
@@ -96,7 +96,7 @@ describe('Server', function() {
             server.addClient(client);
         });
 
-        it('should correctly handle incoming login requests for users for whom a password is required', function() {
+        it('should handle incoming login requests for users for whom a password is required', function() {
             //this test assumes that the server's password requirement mechanism works.
             var threw = false;
             try {
@@ -113,14 +113,14 @@ describe('Server', function() {
 
         });
 
-        it('should correctly handle room join requests');
+        it('should handle room join requests');
         describe('lists and counts', function() {
-            it('should correctly handle user list requests');
-            it('should correctly handle room list requests');
-            it('should correctly handle room user list requests');
-            it('should correctly handle user count requests');
-            it('should correctly handle room count requests');
-            it('should correctly handle room user count requests');
+            it('should handle user list requests');
+            it('should handle room list requests');
+            it('should handle room user list requests');
+            it('should handle user count requests');
+            it('should handle room count requests');
+            it('should handle room user count requests');
         });
         
     });

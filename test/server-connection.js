@@ -184,7 +184,7 @@ describe('Client Connection', function() {
             gently.verify();
         });
 
-        it('should correctly handle incoming login requests', function(done) {
+        it('should handle incoming login requests', function(done) {
 
             // because gently hijacks calls, server.setName is never actually called
             // so no PasswordRequiredError is generated for NornAlbion.
@@ -202,7 +202,7 @@ describe('Client Connection', function() {
 
         });
 
-        it('should correctly handle incoming successful challenge responses', function() {
+        it('should handle incoming successful challenge responses', function() {
             var sentsomething = false;
             client.send = function() {
                 console.log(JSON.stringify(arguments));
@@ -213,7 +213,7 @@ describe('Client Connection', function() {
             sentsomething.should.be.false;
         });
 
-        it('should correctly handle incoming unsuccessful challenge responses', function(done) {
+        it('should handle incoming unsuccessful challenge responses', function(done) {
             client.name = 'NornAlbion';
             client.room = "Creatures";
             
@@ -229,7 +229,7 @@ describe('Client Connection', function() {
         });
 
 
-        it('should correctly handle incoming normal messages', function(done) {
+        it('should handle incoming normal messages', function(done) {
             client.name = "NornAlbion";
             client.room = "Creatures";
             gently.expect(server,'sendMessage', function(name, room, message) {
@@ -243,7 +243,7 @@ describe('Client Connection', function() {
         });
 
 
-        it('should correctly handle incoming private messages', function(done) {
+        it('should handle incoming private messages', function(done) {
             client.name = "NornAlbion";
             gently.expect(server,'sendPrivateMessage', function(name, recipients, message) {
                 name.should.equal("NornAlbion");
@@ -263,7 +263,7 @@ describe('Client Connection', function() {
             client.dataHandler("FGameFreak\tHello!");
         });
         
-        it('should correctly handle incoming room join requests', function(done) {
+        it('should handle incoming room join requests', function(done) {
             client.name = "NornAlbion";
             gently.expect(server,'joinRoom', function(name, room) {
                     name.should.equal("NornAlbion");
@@ -273,7 +273,7 @@ describe('Client Connection', function() {
                 client.dataHandler("DCreatures");
         });
 
-        it('should correctly handle incoming userlist requests', function(done) {
+        it('should handle incoming userlist requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendServerUserList', function(c) {
                 c.should.equal(client.name);
@@ -282,7 +282,7 @@ describe('Client Connection', function() {
             client.dataHandler('Ha');
         });
 
-        it('should correctly handle incoming room list requests', function(done) {
+        it('should handle incoming room list requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendRoomList', function(c) {
                 c.should.equal("NornAlbion");
@@ -292,7 +292,7 @@ describe('Client Connection', function() {
 
         });
 
-        it('should correctly handle incoming room userlist requests', function(done) {
+        it('should handle incoming room userlist requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendRoomUserList', function(c, room) {
                 c.should.equal("NornAlbion");
@@ -302,7 +302,7 @@ describe('Client Connection', function() {
             client.dataHandler('HcCreatures');
         });
 
-        it('should correctly handle incoming user count requests', function(done) {
+        it('should handle incoming user count requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendServerUserCount', function(c) {
                 c.should.equal("NornAlbion");
@@ -312,7 +312,7 @@ describe('Client Connection', function() {
             client.dataHandler('Ga');
         });
 
-        it('should correctly handle incoming room count requests', function(done) {
+        it('should handle incoming room count requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendRoomCount', function(c, room) {
                 c.should.equal("NornAlbion");
@@ -322,7 +322,7 @@ describe('Client Connection', function() {
             client.dataHandler('Gb');
         });
 
-        it('should correctly handle incoming room user count requests', function(done) {
+        it('should handle incoming room user count requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendRoomUserCount', function(c, room) {
                 c.should.equal("NornAlbion");
@@ -332,7 +332,7 @@ describe('Client Connection', function() {
             client.dataHandler('GcCreatures');
         });
 
-        it('should correctly handle incoming mail count requests', function(done) {
+        it('should handle incoming mail count requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendInboxCount', function(c) {
                 c.should.equal("NornAlbion");
@@ -342,7 +342,7 @@ describe('Client Connection', function() {
             client.dataHandler('GT');
         });
 
-        it('should correctly handle incoming mail requests', function(done) {
+        it('should handle incoming mail requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendInbox', function(c) {
                 c.should.equal('NornAlbion');
@@ -352,7 +352,7 @@ describe('Client Connection', function() {
             client.dataHandler('T');
         });
 
-        it('should correctly handle incoming send mail requests', function(done) {
+        it('should handle incoming send mail requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendMailTo', function(from,to,message) {
                 from.should.equal(client.name);
