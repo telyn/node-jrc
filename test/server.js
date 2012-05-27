@@ -1,10 +1,12 @@
 var should = require('should');
 var gently = new (require('gently'))();
-var Message = require('../lib/message.js');
-var constants = require('../lib/constants.js');
-var Client = require('../lib/server/client.js');
-var errors = require('../lib/errors.js');
-var jrc = require('../');
+
+var lib = process.env.COVERAGE ? '../lib-cov/' : '../lib/';
+var Message = require(lib + 'message.js');
+var constants = require(lib + 'constants.js');
+var Client = require(lib + 'server/client.js');
+var errors = require(lib + 'errors.js');
+var jrc = require(lib + 'server.js');
 
 var streamstub;
 var server;

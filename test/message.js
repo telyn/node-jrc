@@ -1,6 +1,8 @@
 var should = require('should');
-var Message = require('../lib/message.js');
-var constants = require('../lib/constants.js');
+
+var lib = process.env.COVERAGE ? '../lib-cov/' : '../lib/';
+var Message = require(lib + 'message.js');
+var constants = require(lib + 'constants.js');
 
 describe('Server-bound Messages',function() {
     describe('That Are Really Necessary For Communication', function() {

@@ -1,11 +1,12 @@
 var should = require('should');
 var gently = new (require('gently'))();
 
-var Message = require('../lib/message.js');
-var constants = require('../lib/constants.js');
-var Client = require('../lib/server/client.js');
-var jrc = require('../');
-var errors = require('../lib/errors.js');
+var lib = process.env.COVERAGE ? '../lib-cov/' : '../lib/';
+var Message = require(lib + 'message.js');
+var constants = require(lib + 'constants.js');
+var Client = require(lib + 'server/client.js');
+var jrc = require(lib + 'server');
+var errors = require(lib + 'errors.js');
 
 var chomp = function(string) {
     return string.replace(/(\n|\r)+$/, '');

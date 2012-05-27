@@ -15,6 +15,7 @@
   },
   "scripts": {
       "test": "mocha -R dot --globals has_more_expectations",
+      "test-cov": "jscoverage lib lib-cov && COVERAGE=1 mocha -R html-cov --globals has_more_expectations > docs/coverage.html && rm -rf lib-cov",
       "start": "node bin/jrc-server"
   },
   "devDependencies": {
