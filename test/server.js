@@ -76,6 +76,10 @@ describe('Server', function() {
                 
             });
         });
+
+        it('should correctly build whois lists');
+        it('should move a user into a valid room');
+        it('should correctly verify passwords');
             
     });
     describe('Actions', function() {
@@ -108,5 +112,16 @@ describe('Server', function() {
             threw.should.be.true;
 
         });
+
+        it('should correctly handle room join requests');
+        describe('lists and counts', function() {
+            it('should correctly handle user list requests');
+            it('should correctly handle room list requests');
+            it('should correctly handle room user list requests');
+            it('should correctly handle user count requests');
+            it('should correctly handle room count requests');
+            it('should correctly handle room user count requests');
+        });
+        
     });
 });
