@@ -14,7 +14,7 @@
     "node": ">= 0.5.0-pre"
   },
   "scripts": {
-      "test": "mocha -R spec --globals has_more_expectations",
+      "test": "mocha -R list --globals has_more_expectations",
       "start": "node bin/jrc-server"
   },
   "devDependencies": {
