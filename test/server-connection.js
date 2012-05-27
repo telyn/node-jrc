@@ -139,7 +139,25 @@ describe('Client Connection', function() {
             client.receiveInboxCount(1);
         });
 
-        it('should send a valid inbox message');
+        it('should send a valid inbox message', function(done) {
+            gently.expect(streamstub,'write', function(data) {
+                data = chomp(data);
+                var expected = 'TGameFreak\tNornAlbion\tHello!';
+                data.should.equal(expected);
+
+                gently.expect(streamstub,'write', function(data) {
+                    data = chomp(data);
+                    var expected = 'TGameFreak\tNornAlbion\tMarcoPolo\tHello!';
+                    data.should.equal(expected);
+                    done();
+                });
+
+                client.receiveMail('GameFreak',['NornAlbion','MarcoPolo'], 'Hello!');
+                
+            });
+
+            client.receiveMail('GameFreak',['NornAlbion'], 'Hello!');
+        });
 
 	});
 
@@ -204,7 +222,7 @@ describe('Client Connection', function() {
             gently.expect(server, 'removeClient', function(c) {
                 c.name.should.equal("NornAlbion");
                 done();
-            })
+            });
 
             client.challenge = 53046;
             client.dataHandler('~55985');
@@ -283,6 +301,7 @@ describe('Client Connection', function() {
             });
             client.dataHandler('HcCreatures');
         });
+
         it('should correctly handle incoming user count requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendServerUserCount', function(c) {
@@ -292,6 +311,7 @@ describe('Client Connection', function() {
             });
             client.dataHandler('Ga');
         });
+
         it('should correctly handle incoming room count requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendRoomCount', function(c, room) {
@@ -311,6 +331,7 @@ describe('Client Connection', function() {
             });
             client.dataHandler('GcCreatures');
         });
+
         it('should correctly handle incoming mail count requests', function(done) {
             client.name = 'NornAlbion';
             gently.expect(server, 'sendInboxCount', function(c) {
@@ -320,8 +341,28 @@ describe('Client Connection', function() {
             });
             client.dataHandler('GT');
         });
-        it('should correctly handle incoming mail requests');
-        it('should correctly handle incoming send mail requests');
+
+        it('should correctly handle incoming mail requests', function(done) {
+            client.name = 'NornAlbion';
+            gently.expect(server, 'sendInbox', function(c) {
+                c.should.equal('NornAlbion');
+
+                done();
+            });
+            client.dataHandler('T');
+        });
+
+        it('should correctly handle incoming send mail requests', function(done) {
+            client.name = 'NornAlbion';
+            gently.expect(server, 'sendMailTo', function(from,to,message) {
+                from.should.equal(client.name);
+                to.length.should.equal(1);
+                to[0].should.equal('GameFreak');
+                message.should.equal('Hello!');
+                done();
+            });
+            client.dataHandler('TGameFreak\tHello!');
+        });
 
 
     });
