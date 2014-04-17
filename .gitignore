@@ -1,3 +1,4 @@
 *.sublime*
 lib-cov
 state.json
+node_modules/
