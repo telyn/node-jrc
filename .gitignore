@@ -2,3 +2,4 @@
 config.json
 state.json
 node_modules/
+*.sublime*
