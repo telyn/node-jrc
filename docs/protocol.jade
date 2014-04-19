@@ -1,0 +1,89 @@
+doctype xml
+<?xml-stylesheet href="style/docbook.xsl" type="application/xslt+xml" ?>
+
+book(xmlns="http://docbook.org/ns/docbook", version="5.0", xml:lang="en")
+	title The JRC Protocol
+	chapter
+		title Overview and Conventions
+		| Throughout this document I will be referring to the tab character (ASCII code 9) as \t, and the characters with ASCII code 2 and 3 as \2 and \3 respectively.
+
+		section
+			title Message Structure
+			para 
+				| The basic structure of a
+				systemitem(class="protocol") JRC
+				| message is a single-character command,
+				| followed by one or two additional single-character sub-commands and then
+				| tab-delimited parameters for those commands.
+			synopsis(language="JRC")
+				command H
+					command c
+						phrase Creatures
+				lineannotation
+					phrase 
+						token GENERALINFO
+						token ROOMUSERLIST
+						| Creatures
+					| This command requests the list of users in the room Creatures.
+					phrase
+						token(role='JRC-command') c
+						| (
+						token(role='node-jrc-constant') ROOMUSERLIST
+						| ) is the sub-command in this instance.
+
+			para
+				| Unfortunately though, while this is true for many commands, a fair-sized set
+				| of JRC commands do not fit this pattern. Some have their sub-commands
+				| after the first tab character. The majority of such messages are server
+				| messages, however a small number of client-sent messages also do.
+				| For irregularity, the worst offender is 
+				| the WHOIS
+				| command, which has an additional format entirely to itself, as well as using both sets of .
+
+			synopsis(language="JRC")
+				command ^
+					phrase JRNet 1.1.636
+				token \t
+				command A
+					phrase example
+				lineannotation
+					phrase
+						token(role='node-jrc-constant') WHOIS
+						| JRNet 1.1.636
+						token \t
+						token(role='node-jrc-constant') NAME
+						| example
+					| This command identifies both the client being used and the nickname the user is attempting to connect as.
+					phrase In this instance, 
+						token(role='JRC-command') A
+						| (
+						token(role='node-jrc-constant') NAME
+						| ) acts as the sub-command for the line, rather than as its own separate command.
+
+	
+	chapter 
+		title Login Flow
+		para
+			systemitem(type="protocol") JRC
+			| has a fairly set flow for the first few commands.
+			| Once the connection has initiated, the client sends a 
+			token(role='node-jrc-constant') WHOIS
+			| version and name message. <!-- TODO: link me -->
+			| The server then (ideally, eventually) responds with a challenge message. <!-- link me -->
+			| The client successfully completes the challenge, and the server acknowledges this. <!-- link me -->
+			| At this point both client and server may send each other any messages they fancy.
+			| An example exchange between JRNet and a node-jrc server running v0.1 is given below.
+			computeroutput <!-- links should be provided to the relevant documentation for each message. -->\
+				| Client:	
+				token(role='JRC-command') ^
+				| JRNet 1.1.636\t
+				token(role='JRC-command') A
+				| nornalbion
+				| Server:	w~39580
+				| Client:	~57640
+				| Client:	Ha
+				| Client:	Hb
+				| Client:	GT
+				| Client:	DCreatures
+				| Server: 	H\tanornalbion
+				| Server:	H\tbCreatures\tCreatures RPG
