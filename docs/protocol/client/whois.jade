@@ -1,0 +1,57 @@
+doctype xml
+section
+	title 
+		token(role='node-jrc-constant') WHOIS
+		| - 
+		token(role='JRC-command') ^
+	| In general, when the WHOIS command is used for getting whois data, the format is as follows.
+	synopsis(language='JRC')
+			command ^
+			replaceable type
+			token \t
+			command I
+			command a
+			replaceable nornalbion
+	section
+		title Initial Login Message
+	section
+		title /WHOIS command
+		para The /WHOIS command is input by the user into a JRC client to ask for another user's whois data.
+		
+		synopsis(language='JRC')
+			command ^
+			phrase whois
+			token \t
+			command I
+			command a
+			replaceable nornalbion
+
+		section
+			title Responses
+			list 
+				title Success
+				listitem User WHOIS message
+			list 
+				title Errors
+				listitem User Not Found
+	section
+		title Entry
+			token(role='node-jrc-constant') WHOIS
+		synopsis(language='JRC')
+			command ^
+			phrase entrywhois
+			token \t
+			command I
+			command a
+			replaceable nornalbion
+		section
+			title Responses
+			list 
+				title Success
+				listitem Entry WHOIS message
+			list 
+				title Errors
+				listitem User Not Found
+	section
+		title JRNet's Idle 
+			token(role='node-jrc-constant') WHOIS
