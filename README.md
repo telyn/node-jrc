@@ -1,6 +1,8 @@
 Hi there!
 =========
 
+![](https://build.aetheria.co.uk/buildStatus/icon?job=node-jrc)
+
 **node-jrc** is an open-source (probably MIT license) JavaScript implementation of [JRChat](http://creatures.wikia.com/wiki/JRChat) for Node.
 
 ![JRNet Screenshot](http://i.imgur.com/P9Rwcin.png)
