@@ -1,9 +1,10 @@
 Hi there!
 =========
 
-[![Build Status](https://secure.travis-ci.org/nornalbion/node-jrc.png?branch=master)](http://travis-ci.org/nornalbion/node-jrc)
-
 **node-jrc** is an open-source (probably MIT license) JavaScript implementation of [JRChat](http://creatures.wikia.com/wiki/JRChat) for Node.
+
+![JRNet Screenshot](http://i.imgur.com/P9Rwcin.png)
+You can try it out today; there's a node-jrc server running at aetheria.co.uk:41528.
 
 In time it will come to include both a server and client library, with samples and API documentation.
 
