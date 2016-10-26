@@ -106,7 +106,7 @@ describe('Server-bound Messages',function() {
             message.params[0].should.equal("Creatures");
 
             //JRNet also seems to send this version on connect.
-            var message = new Message('Hc\tCreatures');
+            message = new Message('Hc\tCreatures');
 
             message.command.should.equal(constants.GENERALINFO);
             message.subcommand.should.equal(constants.ROOMUSERLIST);
@@ -216,7 +216,7 @@ describe('Server-bound Messages',function() {
             message.params.length.should.equal(2);
             message.params[0].should.equal("GameFreak");
             message.params[1].should.equal("Hello!");
-        })
+        });
         /*
         it('should parse JRC_SERVERMESSAGE');
 
@@ -305,7 +305,7 @@ describe('Client-bound Messages', function() {
             message.params[2].should.equal("Hello GameFreak!");
 
             // From GameFreak to me!
-            var message = new Message('FGameFreak\tHello NornAlbion!');
+            message = new Message('FGameFreak\tHello NornAlbion!');
             message.command.should.equal(constants.PRIVATEMESSAGE);
             should.not.exist(message.subcommand);
             should.not.exist(message.subsubcommand);
@@ -414,7 +414,7 @@ describe('Client-bound Messages', function() {
             message.params[2].should.equal("Hello!");
 
             // directed at multiple
-            var message = new Message("TGameFreak\tNornAlbion\tBlossom\tHello!");
+            message = new Message("TGameFreak\tNornAlbion\tBlossom\tHello!");
             message.command.should.equal(constants.MAIL);
             should.not.exist(message.subcommand);
             should.not.exist(message.subsubcommand);

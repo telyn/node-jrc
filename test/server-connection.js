@@ -95,7 +95,7 @@ describe('Client Connection', function() {
             });
 
             
-            client.receiveServerUserList(['NornAlbion', 'GameFreak'])
+            client.receiveServerUserList(['NornAlbion', 'GameFreak']);
         });
 
 
@@ -208,7 +208,7 @@ describe('Client Connection', function() {
             client.send = function() {
                 console.log(JSON.stringify(arguments));
                 sentsomething = true;
-            }
+            };
             client.challenge = 53046;
             client.dataHandler('~55984');
             sentsomething.should.be.false;

@@ -20,7 +20,7 @@ describe('Server', function() {
     describe('Internals', function() {
         describe('#accessLevelAboveOrEqual', function() {
             beforeEach(function() {
-                server = jrc.createServer("",{silent:true},{})
+                server = jrc.createServer("",{silent:true},{});
 
             });
 
@@ -57,7 +57,7 @@ describe('Server', function() {
                 var test = function(user_level, level) {
                     var threw = false;
                     try {
-                        server.accessLevelAboveOrEqual(user_level,level)
+                        server.accessLevelAboveOrEqual(user_level,level);
                     } catch(e) {
                         e.should.instanceof(errors.InvalidLevelError);
                         threw = true;
